@@ -5,8 +5,8 @@ communication support. This repo contains the two AI pipelines owned by the AI s
 
 | Pipeline | Description | Status |
 |---|---|---|
-| [`sign-to-text/`](./sign-to-text) | Arabic Sign Language (KARSL-502) → text, via MediaPipe landmarks + BiLSTM-Attention | In progress |
-| `speech-to-text/` | Egyptian Arabic speech → text, via Whisper + LoRA | In progress |
+| [`sign-to-text/`](./sign-to-text) | Arabic Sign Language (KARSL-502) → text, via MediaPipe landmarks + BiLSTM-Attention | Finished and deployed|
+| `speech-to-text/` | Egyptian Arabic speech → text, via Whisper + LoRA |complete - future improvements planned |
 
 This is one of several repos that make up the full SignLingo system
 (Mobile — Flutter, Backend — Laravel, VR — Unity/Meta Quest, AR — Unity, AI — this repo).
