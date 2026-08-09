@@ -1,0 +1,13 @@
+torch>=2.1
+torchvision
+opencv-python
+mediapipe==0.10.14
+numpy==1.26.4
+pandas
+scikit-learn
+tqdm
+matplotlib
+seaborn
+pyyaml
+onnx
+onnxscript

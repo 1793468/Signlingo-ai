@@ -1,0 +1,29 @@
+data:
+  # Source: https://www.kaggle.com/datasets/yousefdotpy/karsl-502
+  # On Kaggle notebooks this is auto-mounted at /kaggle/input/datasets/yousefdotpy/karsl-502
+  # Locally, download with:
+  #   kaggle datasets download -d yousefdotpy/karsl-502 -p data/raw --unzip
+  raw_dataset_root: "data/raw"
+  processed_dir: "data/processed"          # train/val/test .npz files
+  metadata_csv:
+    train: "data/train_metadata.csv"
+    val: "data/val_metadata.csv"
+    test: "data/test_metadata.csv"
+  max_signs: 502
+  max_frames: 30
+
+model:
+  name: "lstm_attention"
+  hidden_size: 256
+  num_layers: 2
+  dropout: 0.3
+
+training:
+  batch_size: 64
+  epochs: 20
+  learning_rate: 0.001
+  device: "cuda"                # falls back to cpu automatically if unavailable
+
+export:
+  onnx_output_path: "models/sign_model.onnx"
+  opset_version: 17

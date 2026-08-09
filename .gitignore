@@ -1,0 +1,25 @@
+# Data & model weights - never commit these
+**/data/
+**/models/*.pt
+**/models/*.onnx
+**/models/*.pth
+*.npz
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Jupyter/Kaggle output noise
+*.log
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
