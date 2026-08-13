@@ -1,0 +1,6 @@
+data/raw/
+data/manifests/
+checkpoints/
+.venv/
+__pycache__/
+*.pyc
