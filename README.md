@@ -6,24 +6,24 @@ communication support. This repo contains the two AI pipelines owned by the AI s
 | Pipeline | Description | Status |
 |---|---|---|
 | [`sign-to-text/`](./sign-to-text) | Arabic Sign Language (KARSL-502) → text, via MediaPipe landmarks + BiLSTM-Attention | Finished and deployed|
-| `speech-to-text/` | Egyptian Arabic speech → text, via Whisper + LoRA |complete - future improvements planned |
+| [`speech-to-text/`](./speech-to-text) | Egyptian Arabic speech → text, via Whisper + LoRA | complete - future improvements planned |
 
 This is one of several repos that make up the full SignLingo system
 (Mobile — Flutter, Backend — Laravel, VR — Unity/Meta Quest, AR — Unity, AI — this repo).
 
 ## Team (AI)
 
-| Member | Responsibility |
-|---|---|
-| **Mariam Ashraf Tobar** | Data preprocessing pipeline, BiLSTM + Attention model, training & evaluation |
-| **Youstina Wael** | Code review, ONNX export & inference optimization, backend integration, test cases |
+Each pipeline has its own team breakdown, since the two are built and reviewed
+independently — see [`sign-to-text/README.md`](./sign-to-text/README.md#workflow--handoff)
+and [`speech-to-text/README.md`](./speech-to-text/README.md#team) for who owns what on
+each.
 
 ## Repo layout
 
 ```
 signlingo-ai/
 ├── sign-to-text/     # ArSL video → text
-├── speech-to-text/   # Egyptian Arabic audio → text (added next)
+├── speech-to-text/   # Egyptian Arabic audio → text
 └── docs/             # Shared reports, diagrams
 ```
 
@@ -32,7 +32,8 @@ developed, tested, and versioned independently.
 
 ## Getting started
 
-See [`sign-to-text/README.md`](./sign-to-text/README.md) for setup and usage.
+See [`sign-to-text/README.md`](./sign-to-text/README.md) or
+[`speech-to-text/README.md`](./speech-to-text/README.md) for setup and usage.
 
 ## License
 

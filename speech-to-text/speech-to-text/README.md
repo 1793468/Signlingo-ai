@@ -58,7 +58,12 @@ speech-to-text/
 │   ├── train_phase2.py     # Phase 2: encoder unfrozen, continued FT     — owner: Mariam
 │   ├── merge_and_export.py # folds a standalone LoRA adapter into base weights
 │   ├── export_onnx.py      # ONNX export for backend serving
+│   ├── benchmark.py        # full test-set WER/CER + inference timing
 │   └── infer.py            # transcribe a single audio file
+├── tests/
+│   └── test_robustness.py  # silence / noise / short-clip / SNR-degradation checks
+├── results/
+│   └── README.md           # eval samples + metrics
 ├── checkpoints/            # (gitignored) trained adapters / merged models
 └── requirements.txt
 ```
@@ -179,9 +184,47 @@ chmod 600 ~/.kaggle/kaggle.json
 WER and CER, computed with `normalize_arabic()` applied to both
 predictions and references (the notebook's changelog flags this as a fix
 — they weren't consistently normalized before, which inflated WER
-artificially). Evaluate on the **full** held-out test split, not a
-capped subset — an earlier version of the notebook capped eval at 500
-samples, which the changelog also calls out as a bug.
+artificially).
+
+```bash
+python src/benchmark.py \
+    --model_dir checkpoints/merged_phase2 \
+    --test_manifest data/manifests/test.jsonl \
+    --out results/eval_metrics.json
+```
+
+Runs the full held-out test split (not a capped subset — an earlier
+version of the notebook capped eval at 500 samples, which its changelog
+also calls out as a bug) and records WER, CER, empty-prediction count,
+and average per-sample inference time to `results/eval_metrics.json`.
+This is the number that's currently missing from `results/README.md` —
+that file only has 5 qualitative examples so far.
+
+## Robustness testing
+
+The clean Kaggle dataset doesn't tell you how the model behaves on
+silence, noise, or a real phone mic in a noisy room. `tests/test_robustness.py`
+covers four cases the benchmark above doesn't:
+
+```bash
+python tests/test_robustness.py \
+    --model_dir checkpoints/merged_phase2 \
+    --test_manifest data/manifests/test.jsonl \
+    --num_samples 10
+```
+
+1. **Pure silence** — flags if the model hallucinates non-empty text
+2. **White noise** — same check
+3. **Very short clip (0.2s)** — flags if inference crashes instead of
+   just returning something (or nothing) gracefully
+4. **Real test audio at injected SNR levels** (clean / 20dB / 10dB / 5dB)
+   — shows how much WER actually degrades as the input gets noisier,
+   which is a reasonable proxy for "phone mic in a noisy room" since
+   real noisy Egyptian-Arabic audio with matching transcripts isn't
+   available to test against directly
+
+Writes a report to `results/robustness_report.json`.
+
 
 ## Integrating into the app
 
