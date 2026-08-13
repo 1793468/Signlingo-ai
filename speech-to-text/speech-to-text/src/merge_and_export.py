@@ -1,4 +1,6 @@
 """
+Owner: Mariam.
+
 Merge a trained LoRA adapter into the base Whisper weights, producing a
 single standalone model directory ready to export/deploy — no PEFT
 dependency needed at inference time.

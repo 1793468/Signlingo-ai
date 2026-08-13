@@ -14,7 +14,7 @@ This doesn't replace src/benchmark.py (clean-set WER/CER) — it's a
 smoke test for failure modes that a clean-audio benchmark can't surface.
 
 Usage:
-    python tests/test_robustness.py \
+    python src/robustness_check.py \
         --model_dir checkpoints/merged_phase2 \
         --test_manifest data/manifests/test.jsonl \
         --num_samples 10
@@ -30,9 +30,7 @@ import numpy as np
 import torch
 from transformers import WhisperForConditionalGeneration, WhisperProcessor
 
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from dataset import normalize_arabic  # noqa: E402
+from dataset import normalize_arabic
 
 wer_metric = evaluate.load("wer")
 
@@ -72,7 +70,7 @@ def add_noise(audio, snr_db):
     return (audio + noise).astype(np.float32)
 
 
-def test_silence(processor, model, device, sample_rate):
+def check_silence(processor, model, device, sample_rate):
     print("\n=== Case 1: pure silence (3s) ===")
     audio = np.zeros(sample_rate * 3, dtype=np.float32)
     pred = transcribe(processor, model, audio, sample_rate, device)
@@ -84,7 +82,7 @@ def test_silence(processor, model, device, sample_rate):
     return {"case": "silence", "prediction": pred, "flagged": bool(pred.strip())}
 
 
-def test_white_noise(processor, model, device, sample_rate):
+def check_white_noise(processor, model, device, sample_rate):
     print("\n=== Case 2: pure white noise (3s) ===")
     audio = np.random.normal(0, 0.05, sample_rate * 3).astype(np.float32)
     pred = transcribe(processor, model, audio, sample_rate, device)
@@ -96,7 +94,7 @@ def test_white_noise(processor, model, device, sample_rate):
     return {"case": "white_noise", "prediction": pred, "flagged": bool(pred.strip())}
 
 
-def test_short_clip(processor, model, device, sample_rate):
+def check_short_clip(processor, model, device, sample_rate):
     print("\n=== Case 3: very short clip (0.2s) ===")
     audio = np.random.normal(0, 0.02, int(sample_rate * 0.2)).astype(np.float32)
     try:
@@ -109,7 +107,7 @@ def test_short_clip(processor, model, device, sample_rate):
         return {"case": "short_clip", "error": str(e), "crashed": True}
 
 
-def test_noisy_real_audio(processor, model, device, sample_rate, test_manifest, num_samples):
+def check_noisy_real_audio(processor, model, device, sample_rate, test_manifest, num_samples):
     print(f"\n=== Case 4: real test audio at varying SNR (n={num_samples}) ===")
     records = [json.loads(l) for l in open(test_manifest, encoding="utf-8")]
     random.seed(42)
@@ -150,11 +148,11 @@ def main():
     processor, model = load_model(args.model_dir, device)
 
     report = []
-    report.append(test_silence(processor, model, device, args.sample_rate))
-    report.append(test_white_noise(processor, model, device, args.sample_rate))
-    report.append(test_short_clip(processor, model, device, args.sample_rate))
+    report.append(check_silence(processor, model, device, args.sample_rate))
+    report.append(check_white_noise(processor, model, device, args.sample_rate))
+    report.append(check_short_clip(processor, model, device, args.sample_rate))
     report.append(
-        test_noisy_real_audio(
+        check_noisy_real_audio(
             processor, model, device, args.sample_rate, args.test_manifest, args.num_samples
         )
     )

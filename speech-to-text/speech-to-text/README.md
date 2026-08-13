@@ -31,13 +31,21 @@ the notebook / `dataset.max_samples` in `configs/config.yaml`.
 
 | Owner | Responsibility |
 | --- | --- |
-| **Mariam** | Data pipeline, LoRA/model design, `src/train_phase2.py` (encoder unfreeze), evaluation |
-| **Youstina** | `src/train_phase1.py`, code review, `merge_and_export.py` / `export_onnx.py`, backend integration, test cases |
+| **Mariam** | Data pipeline, LoRA/model design, `src/train_phase2.py` (encoder unfreeze), `merge_and_export.py`, `export_onnx.py`, backend integration, evaluation |
+| **Youstina** | `src/train_phase1.py`, code review, follows/validates the ONNX export + backend integration, test cases |
 
-Phase 1 → Phase 2 is a real handoff: Youstina's `train_phase1.py` produces
-`checkpoints/lora_adapter/`, which Mariam's `train_phase2.py` loads and
-continues from. Agree on where that checkpoint lands (shared Kaggle
-output, Drive, etc.) before kicking off a full run.
+Different split from `sign-to-text`, worth being explicit about: on
+`sign-to-text`, Youstina *builds* the ONNX export and backend
+integration. Here, Mariam builds both — Youstina reviews and writes
+tests against them rather than building them herself.
+
+Phase 1 → Phase 2 is still a real handoff: Youstina's `train_phase1.py`
+produces `checkpoints/lora_adapter/`, which Mariam's `train_phase2.py`
+loads and continues from. Agree on where that checkpoint lands (shared
+Kaggle output, Drive, etc.) before kicking off a full run.
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for branch/PR conventions
+specific to this pipeline.
 
 ## Layout
 
@@ -167,7 +175,7 @@ chmod 600 ~/.kaggle/kaggle.json
        --out_dir checkpoints/merged
    ```
 
-6. **Export to ONNX for backend integration** (Youstina)
+6. **Export to ONNX for backend integration** (Mariam)
 
    ```bash
    python src/export_onnx.py \
@@ -224,6 +232,12 @@ python tests/test_robustness.py \
    available to test against directly
 
 Writes a report to `results/robustness_report.json`.
+
+`tests/test_preprocessing.py` covers the fast, model-free case: unit
+tests confirming `normalize_arabic()` stays identical between
+`preprocess.py` and `dataset.py` (the notebook's changelog flags this
+exact drift as a past bug), plus column-detection edge cases. No GPU or
+downloaded model needed — safe to run in CI.
 
 
 ## Integrating into the app

@@ -1,4 +1,7 @@
 """
+Owner: Mariam. (Different from sign-to-text, where Youstina builds this —
+here Youstina reviews/tests it instead.)
+
 Export the merged Whisper model to ONNX (encoder + decoder + decoder-with-past),
 the same integration path sign-to-text used for backend/inference optimization.
 
