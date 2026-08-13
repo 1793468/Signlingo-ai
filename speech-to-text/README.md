@@ -31,8 +31,8 @@ the notebook / `dataset.max_samples` in `configs/config.yaml`.
 
 | Owner | Responsibility |
 | --- | --- |
-| **Mariam** | Data pipeline, LoRA/model design, `src/train_phase2.py` (encoder unfreeze), `merge_and_export.py`, `export_onnx.py`, backend integration, evaluation |
-| **Youstina** | `src/train_phase1.py`, code review, follows/validates the ONNX export + backend integration, test cases |
+| **Mariam** | Data pipeline, LoRA/model design, `src/train_phase2.py` (encoder unfreeze), `merge_and_export.py`, `export_onnx.py`, evaluation |
+| **Youstina** | `src/train_phase1.py`, code review,reviews the backend integration  to confirm the model works correctly, test cases |
 
 Different split from `sign-to-text`, worth being explicit about: on
 `sign-to-text`, Youstina *builds* the ONNX export and backend
